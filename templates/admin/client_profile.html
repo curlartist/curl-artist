@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/client_profile.css')}}">
+
+<section class="profile-section">
+    
+    <div class="glass-panel profile-wrapper">
+        
+        <div class="profile-header">
+            <a href="{{ url_for('view_clients') }}" class="back-btn">
+                <i class="fa-solid fa-arrow-left"></i>
+            </a>
+            
+            <div class="client-details">
+                <h1>{{ name }}</h1>
+                <p class="client-meta">
+                    <a href="https://wa.me/{{ phone }}" target="_blank" class="wa-link">
+                        <i class="fa-brands fa-whatsapp"></i> {{ phone }}
+                    </a>
+                    <span class="divider">|</span>
+                    <span class="visit-count">{{ confirmed_count }} Confirmed Visits</span>
+                </p>
+            </div>
+        </div>
+
+        <h3 class="section-title">
+            <i class="fa-regular fa-calendar"></i> Visit History
+        </h3>
+
+        {% if appointments %}
+            <div class="appointment-list">
+                {% for apt in appointments %}
+                <div class="appointment-card {{ 'status-confirmed' if apt.is_confirmed else 'status-pending' }}">
+                    
+                    <div class="apt-info">
+                        <span class="service-name">{{ apt.service }}</span>
+                        <span class="apt-meta">{{ apt.date_requested }} @ {{ apt.branch }}</span>
+                    </div>
+                    
+                    <div class="apt-action">
+                        {% if apt.is_confirmed %}
+                            <span class="badge-confirmed">Confirmed</span>
+                        {% else %}
+                            <span class="badge-pending">Pending</span>
+                            <a href="{{ url_for('confirm_appointment', id=apt.id) }}" class="link-confirm">Confirm</a>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="empty-state">No appointments found.</p>
+        {% endif %}
+
+
+        <h3 class="section-title">
+            <i class="fa-regular fa-star"></i> Reviews
+        </h3>
+
+        {% if reviews %}
+            <div class="reviews-grid">
+                {% for review in reviews %}
+                <div class="review-card">
+                    
+                    <div class="review-header">
+                        <div class="rating-stars">{{ review.rating }} <i class="fa-solid fa-star"></i></div>
+                        <div class="review-date">{{ review.created_at.strftime('%Y-%m-%d') }}</div>
+                    </div>
+                    
+                    <p class="review-content">{{ review.content }}</p>
+                    
+                    {% if review.image_back or review.image_front %}
+                    <div class="review-collage">
+                        {% if review.image_back %}
+                            <a href="{{ url_for('static', filename='uploads/reviews/' + review.image_back) }}" target="_blank">
+                                <img src="{{ url_for('static', filename='uploads/reviews/' + review.image_back) }}" class="collage-img img-back">
+                            </a>
+                        {% endif %}
+                        {% if review.image_front %}
+                            <a href="{{ url_for('static', filename='uploads/reviews/' + review.image_front) }}" target="_blank">
+                                <img src="{{ url_for('static', filename='uploads/reviews/' + review.image_front) }}" class="collage-img img-front">
+                            </a>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+
+                    <div class="review-footer-row">
+                        <div class="meta-left">
+                            {% if review.branch %}
+                                <span class="branch-tag">{{ review.branch }}</span>
+                            {% endif %}
+                            <span class="kudos-tag"><i class="fa-solid fa-heart"></i> {{ review.kudos }}</span>
+                        </div>
+
+                        <div class="review-actions">
+                            <a href="{{ url_for('toggle_feature', id=review.id) }}" 
+                               class="action-btn feature-btn {{ 'active' if review.is_featured else '' }}">
+                                <i class="fa-solid fa-star"></i> {{ 'Featured' if review.is_featured else 'Feature' }}
+                            </a>
+
+                            <button onclick="openDeleteModal('{{ url_for('delete_review', id=review.id) }}')" 
+                                    class="action-btn delete-btn">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="empty-state">No reviews yet.</p>
+        {% endif %}
+
+    </div>
+
+</section>
+
+{% include 'admin/dashboard_scripts.html' %}
+{% endblock %}

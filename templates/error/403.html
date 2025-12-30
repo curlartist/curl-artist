@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="error-page">
+    <div class="glass-panel error-card">
+        <i class="fa-solid fa-lock error-icon"></i>
+        <h1>403</h1>
+        <h2>Access Denied</h2>
+        <p>This area is restricted. You need to be an admin to enter here.</p>
+        <a href="{{ url_for('admin_login') }}" class="reel-btn">Admin Login</a>
+    </div>
+</section>
+
+<style>
+    .error-page {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding-top: 100px;
+        text-align: center;
+    }
+    .error-card {
+        padding: 50px;
+        max-width: 500px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+    .error-icon {
+        font-size: 5rem;
+        color: #333;
+        margin-bottom: 10px;
+        opacity: 0.8;
+    }
+    .error-card h1 { font-size: 4rem; margin: 0; line-height: 1; color: #333; }
+    .error-card h2 { margin: 0; font-size: 1.5rem; color: #333; }
+    .error-card p { color: #666; line-height: 1.6; }
+</style>
+{% endblock %}

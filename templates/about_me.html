@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/about_me.css') }}">
+
+<section class="about-section">
+    
+    <div class="glass-panel about-card">
+        
+        <div class="profile-container">
+            <div class="img-wrapper">
+                <img src="{{ url_for('static', filename='asset/arpit.jpg') }}" alt="Arpit Aaryan">
+            </div>
+            <div class="floating-badge">
+                <a href="https://instagram.com/noi.arpitaaryan" target="_blank" style="color: white;">
+                    <i class="fa-brands fa-instagram"></i> @noi.arpitaaryan
+                </a>
+            </div>
+        </div>
+
+        <div class="text-content">
+            <h1>Hey, I'm <span class="highlight">Arpit</span>.</h1>
+            <h2 class="fresh-headline">Texture Supportive. <span style="color: var(--accent-pop);">Structure Obsessed.</span></h2>
+            
+            <p class="bio-text">
+                My journey didn't start with just picking up scissors; it started with mastering the science. After a year-long internship, I dove deep into the <strong>ARTH (Absolute Route To Hairdressing)</strong> program. That’s where I cracked the code: <em style="color: var(--text-color); font-weight: 600;">Basic is the new Advanced.</em> Once I mastered the terminology and foundations, I realized I could speak the universal language of hair—whether national or international.
+            </p>
+
+            <p class="bio-text">
+                I spent 4 years working with big commercial brands, but something felt off. The industry wanted to "fix" texture with smoothening and keratin. <strong>I wanted to free it.</strong> I realized I am a "Texture Supportive" stylist. I don't alter your natural self; I enhance it. That’s when I dedicated myself entirely to the Curly Hair segment.
+            </p>
+
+            <p class="bio-text" style="border-left: 4px solid var(--accent-pop); padding-left: 15px; background: rgba(255, 107, 107, 0.05); border-radius: 0 10px 10px 0;">
+                I believe in investing in excellence. I've trained extensively with global icons like <strong>Nikitochin</strong> and <strong>Hairbyreema</strong> to bring world-class techniques to my chair. Now, I’m pouring all that premium knowledge into your look—and the courses you are about to witness.
+            </p>
+
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <span class="stat-num">4+</span>
+                    <span class="stat-label">Years Exp</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-num">ARTH</span>
+                    <span class="stat-label">Certified</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-num">100%</span>
+                    <span class="stat-label">Natural</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-num">{{ avg_rating }} <span style="font-size: 1rem;">★</span></span>
+                    <span class="stat-label">Avg Rating</span>
+                </div>
+            </div>
+
+            <div style="margin-top: 30px;">
+                <a href="{{ url_for('appointment') }}" class="book-btn" style="display: inline-flex; padding: 15px 30px; font-size: 1.1rem;">
+                    Book your vibe reset <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+{% endblock %}

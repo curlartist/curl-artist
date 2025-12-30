@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="error-page">
+    <div class="glass-panel error-card">
+        <i class="fa-solid fa-hand error-icon"></i>
+        <h1>405</h1>
+        <h2>Not That Way</h2>
+        <p>You tried to use a method that isn't allowed here. It's like trying to cut hair with a spoon.</p>
+        <a href="{{ url_for('index') }}" class="reel-btn">Go Back Home</a>
+    </div>
+</section>
+
+<style>
+    .error-page { min-height: 80vh; display: flex; align-items: center; justify-content: center; padding-top: 100px; text-align: center; }
+    .error-card { padding: 50px; max-width: 500px; display: flex; flex-direction: column; align-items: center; gap: 20px; }
+    .error-icon { font-size: 5rem; color: #ff6b81; margin-bottom: 10px; opacity: 0.8; } /* Pink-ish red */
+    .error-card h1 { font-size: 4rem; margin: 0; line-height: 1; color: #ff6b81; }
+    .error-card h2 { margin: 0; font-size: 1.5rem; color: #333; }
+    .error-card p { color: #666; line-height: 1.6; }
+</style>
+{% endblock %}

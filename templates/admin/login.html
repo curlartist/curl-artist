@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section style="min-height: 80vh; display: flex; align-items: center; justify-content: center; padding-top:200px;">
+    <div class="glass-panel" style="width: 100%; max-width: 400px; text-align: center;">
+        <h2 style="margin-bottom: 20px;">Admin Access</h2>
+        
+        <form action="{{ url_for('admin_login') }}" method="POST" style="display: flex; flex-direction: column; gap: 15px;">
+            <input type="text" name="username" placeholder="Username" required 
+                   style="padding: 12px; border-radius: 10px; border: 1px solid #ccc; font-family: inherit;">
+            
+            <input type="password" name="password" placeholder="Password" required 
+                   style="padding: 12px; border-radius: 10px; border: 1px solid #ccc; font-family: inherit;">
+            
+            <button type="submit" class="book-btn" style="justify-content: center; width: 100%; border: none; cursor: pointer;">
+                Let me in <i class="fa-solid fa-lock-open"></i>
+            </button>
+        </form>
+    </div>
+</section>
+{% endblock %}

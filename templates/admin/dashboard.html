@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section style="padding-top: 150px; min-height: 80vh; display: flex; align-items: center; justify-content: center;">
+    
+    <div style="width: 100%; max-width: 900px;">
+        
+        <h1 style="text-align: center; margin-bottom: 10px; font-size: 2.5rem;">Admin Hub</h1>
+        <p style="text-align: center; color: #666; margin-bottom: 50px;">Welcome back, Arpit. What are we doing today?</p>
+        
+        <div class="dashboard-grid">
+            
+            <a href="{{ url_for('transformations_log') }}" class="dash-card">
+                <div class="icon-box" style="background: rgba(255, 107, 107, 0.1); color: var(--accent-pop);">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                </div>
+                <h3>Transformations</h3>
+                <p>Upload new cuts, manage reels, or delete old posts.</p>
+            </a>
+
+            <a href="{{ url_for('view_appointments') }}" class="dash-card">
+                <div class="icon-box" style="background: rgba(37, 211, 102, 0.1); color: #25D366;">
+                    <i class="fa-regular fa-calendar-check"></i>
+                </div>
+                <h3>Appointment Log</h3>
+                <p>Check upcoming bookings and clear cancelled ones.</p>
+            </a>
+
+            <a href="{{ url_for('reviews_log') }}" class="dash-card">
+                <div class="icon-box" style="background: rgba(255, 215, 0, 0.1); color: #f1c40f;">
+                    <i class="fa-solid fa-star"></i>
+                </div>
+                <h3>Review Log</h3>
+                <p>Approve feedback, delete spam, and pick favorites.</p>
+            </a>
+
+            <a href="{{ url_for('view_clients') }}" class="dash-card">
+                <div class="icon-box" style="background: rgba(52, 152, 219, 0.1); color: #3498db;">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+                <h3>Client Database</h3>
+                <p>Track your regulars, VIPs, and client history.</p>
+            </a>
+
+        </div>
+
+        <div style="text-align: center; margin-top: 50px;">
+            <a href="{{ url_for('logout') }}" style="color: #666; text-decoration: underline; font-size: 0.9rem;">Log Out</a>
+        </div>
+
+    </div>
+
+</section>
+
+<style>
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        padding: 0 20px;
+    }
+
+    .dash-card {
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        padding: 40px;
+        border-radius: 25px;
+        text-align: center;
+        transition: transform 0.3s, box-shadow 0.3s;
+        text-decoration: none;
+        color: inherit;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .dash-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        background: white;
+    }
+
+    .icon-box {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 2rem;
+        margin-bottom: 20px;
+    }
+
+    .dash-card h3 {
+        margin: 0 0 10px 0;
+        font-size: 1.4rem;
+    }
+
+    .dash-card p {
+        color: #666;
+        font-size: 0.95rem;
+        line-height: 1.5;
+        margin: 0;
+    }
+</style>
+{% endblock %}

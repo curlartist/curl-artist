@@ -1,0 +1,221 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section style="padding-top: 150px; display: block; min-height: auto;">
+    
+    <div class="glass-panel" style="margin-bottom: 40px; max-width: 1200px; margin-left: auto; margin-right: auto;">
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <a href="{{ url_for('dashboard') }}" style="color: #666; font-weight: 600; text-decoration: none;">
+                    <i class="fa-solid fa-arrow-left"></i> Hub
+                </a>
+                <h2 style="margin: 0;">Review Log</h2>
+            </div>
+
+            <div style="display: flex; gap: 10px;">
+                <select id="filterBranch" onchange="filterReviews()" style="padding: 8px; border-radius: 6px; border: 1px solid #ddd; background: white; cursor: pointer;">
+                    <option value="all">All Branches</option>
+                    <!-- <option value="Mumbai">Mumbai</option> -->
+                    <option value="Delhi">Delhi</option>
+                    <!-- <option value="Gurugram">Gurugram</option> -->
+                    <!-- <option value="Bengaluru">Bengaluru</option> -->
+                </select>
+                <select id="filterRating" onchange="filterReviews()" style="padding: 8px; border-radius: 6px; border: 1px solid #ddd; background: white; cursor: pointer;">
+                    <option value="all">All Ratings</option>
+                    <option value="5">5 Stars</option>
+                    <option value="4">4 Stars</option>
+                    <option value="3">3 Stars</option>
+                </select>
+            </div>
+        </div>
+
+        <h3 style="color: #d63031; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 20px;">
+            Needs Approval
+        </h3>
+        
+        {% if pending_reviews %}
+            <div style="overflow-x: auto; margin-bottom: 50px;">
+                <table style="width: 100%; border-collapse: collapse; min-width: 900px;">
+                    <thead>
+                        <tr style="text-align: left; background: #f9f9f9; border-bottom: 2px solid #eee;">
+                            <th style="padding: 12px;">Name</th>
+                            <th style="padding: 12px;">Photos</th> 
+                            <th style="padding: 12px;">Review</th>
+                            <th style="padding: 12px;">Rating</th> <th style="padding: 12px;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for review in pending_reviews %}
+                        <tr class="review-row" data-branch="{{ review.branch }}" data-rating="{{ review.rating }}" style="border-bottom: 1px solid #eee;">
+                            <td style="padding: 15px; vertical-align: top;">
+                                <div style="font-weight: bold;">{{ review.customer_name }}</div>
+                                <div style="font-size: 0.8rem; color: #666;">{{ review.phone_number }}</div>
+                            </td>
+                            
+                            <td style="padding: 15px; vertical-align: top;">
+                                <div style="display: flex; gap: 5px;">
+                                    {% if review.image_back %}
+                                    <a href="{{ url_for('static', filename='uploads/reviews/' + review.image_back) }}" target="_blank">
+                                        <img src="{{ url_for('static', filename='uploads/reviews/' + review.image_back) }}" 
+                                             style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px; border: 1px solid #ddd;">
+                                    </a>
+                                    {% endif %}
+                                    {% if review.image_front %}
+                                    <a href="{{ url_for('static', filename='uploads/reviews/' + review.image_front) }}" target="_blank">
+                                        <img src="{{ url_for('static', filename='uploads/reviews/' + review.image_front) }}" 
+                                             style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px; border: 1px solid #ddd;">
+                                    </a>
+                                    {% endif %}
+                                    {% if not review.image_back and not review.image_front %}
+                                        <span style="color: #ccc; font-size: 0.8rem;">-</span>
+                                    {% endif %}
+                                </div>
+                            </td>
+
+                            <td style="padding: 15px; vertical-align: top; width: 35%;">
+                                {% if review.branch %}
+                                <span style="background: #eee; padding: 2px 8px; border-radius: 10px; font-size: 0.7rem; color: #666; text-transform: uppercase;">{{ review.branch }}</span>
+                                <br>
+                                {% endif %}
+                                <span style="color: #555; display: block; margin-top: 5px;">{{ review.content }}</span>
+                            </td>
+                            
+                            <td style="padding: 15px; vertical-align: top; color: gold; font-weight: bold;">
+                                {{ review.rating }} <i class="fa-solid fa-star"></i>
+                            </td>
+                            
+                            <td style="padding: 15px; vertical-align: top;">
+                                <div style="display: flex; gap: 10px;">
+                                    <a href="{{ url_for('approve_review', id=review.id) }}" class="book-btn" style="background: #25D366; border: none; padding: 5px 12px; color: white;"><i class="fa-solid fa-check"></i></a>
+                                    
+                                    <button onclick="openDeleteModal('{{ url_for('delete_review', id=review.id) }}')" 
+                                            class="book-btn" style="background: #ff4757; border: none; padding: 5px 12px; cursor: pointer; color: white;">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p style="color: #888; margin-bottom: 50px;">No pending reviews.</p>
+        {% endif %}
+
+
+        <h3 style="color: #333; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 20px;">
+            Live Reviews
+        </h3>
+
+        {% if approved_reviews %}
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; min-width: 900px;">
+                    <thead>
+                        <tr style="text-align: left; background: #f9f9f9; border-bottom: 2px solid #eee;">
+                            <th style="padding: 12px;">Name</th>
+                            <th style="padding: 12px;">Photos</th> 
+                            <th style="padding: 12px;">Review</th>
+                            <th style="padding: 12px;">Rating</th> <th style="padding: 12px;">Kudos</th>  <th style="padding: 12px; text-align: center;">Feature</th>
+                            <th style="padding: 12px;">Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for review in approved_reviews %}
+                        <tr class="review-row" data-branch="{{ review.branch }}" data-rating="{{ review.rating }}" style="border-bottom: 1px solid #eee;">
+                            <td style="padding: 15px; vertical-align: top;">
+                                <div style="font-weight: bold;">{{ review.customer_name }}</div>
+                                <div style="font-size: 0.8rem; color: #666;">{{ review.phone_number }}</div>
+                            </td>
+
+                            <td style="padding: 15px; vertical-align: top;">
+                                <div style="display: flex; gap: 5px;">
+                                    {% if review.image_back %}
+                                    <a href="{{ url_for('static', filename='uploads/reviews/' + review.image_back) }}" target="_blank">
+                                        <img src="{{ url_for('static', filename='uploads/reviews/' + review.image_back) }}" 
+                                             style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px; border: 1px solid #ddd;">
+                                    </a>
+                                    {% endif %}
+                                    {% if review.image_front %}
+                                    <a href="{{ url_for('static', filename='uploads/reviews/' + review.image_front) }}" target="_blank">
+                                        <img src="{{ url_for('static', filename='uploads/reviews/' + review.image_front) }}" 
+                                             style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px; border: 1px solid #ddd;">
+                                    </a>
+                                    {% endif %}
+                                    {% if not review.image_back and not review.image_front %}
+                                        <span style="color: #ccc; font-size: 0.8rem;">-</span>
+                                    {% endif %}
+                                </div>
+                            </td>
+
+                            <td style="padding: 15px; vertical-align: top; width: 35%;">
+                                {% if review.branch %}
+                                <span style="background: #eee; padding: 2px 8px; border-radius: 10px; font-size: 0.7rem; color: #666; text-transform: uppercase;">{{ review.branch }}</span>
+                                <br>
+                                {% endif %}
+                                <span style="color: #555; display: block; margin-top: 5px;">{{ review.content }}</span>
+                            </td>
+
+                            <td style="padding: 15px; vertical-align: top; color: gold; font-weight: bold;">
+                                {{ review.rating }} <i class="fa-solid fa-star"></i>
+                            </td>
+
+                            <td style="padding: 15px; vertical-align: top; font-weight: bold; color: #ff4757;">
+                                <i class="fa-solid fa-heart"></i> {{ review.kudos }}
+                            </td>
+
+                            <td style="padding: 15px; text-align: center; vertical-align: top;">
+                                <a href="{{ url_for('toggle_feature', id=review.id) }}" 
+                                   style="font-size: 1.2rem; color: {{ 'gold' if review.is_featured else '#ccc' }}; transition: 0.2s;"
+                                   title="Toggle Feature">
+                                    <i class="fa-solid fa-star"></i>
+                                </a>
+                            </td>
+                            
+                            <td style="padding: 15px; vertical-align: top;">
+                                <button onclick="openDeleteModal('{{ url_for('delete_review', id=review.id) }}')" 
+                                        style="background: transparent; border: none; color: #ff4757; font-size: 1rem; cursor: pointer;">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p style="color: #888;">No approved reviews yet.</p>
+        {% endif %}
+    </div>
+
+</section>
+
+<script>
+    function filterReviews() {
+        let branch = document.getElementById('filterBranch').value;
+        let rating = document.getElementById('filterRating').value;
+        
+        let rows = document.querySelectorAll('.review-row');
+        
+        rows.forEach(row => {
+            let rowBranch = row.getAttribute('data-branch');
+            let rowRating = row.getAttribute('data-rating');
+            
+            // Treat 'None' branch as empty string match or just allow it if 'all' is selected
+            if (rowBranch === 'None') rowBranch = '';
+
+            let showBranch = (branch === 'all' || rowBranch === branch);
+            let showRating = (rating === 'all' || rowRating === rating);
+            
+            if (showBranch && showRating) {
+                row.style.display = 'table-row';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+</script>
+
+{% include 'admin/dashboard_scripts.html' %}
+{% endblock %}

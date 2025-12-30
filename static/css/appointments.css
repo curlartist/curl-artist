@@ -1,0 +1,154 @@
+/* --- PAGE LAYOUT --- */
+.appointment-log-section {
+    padding-top: 150px; 
+    display: block; 
+    min-height: auto;
+}
+
+.log-container {
+    margin-bottom: 40px; 
+    max-width: 1000px; 
+    margin-left: auto; 
+    margin-right: auto;
+}
+
+/* --- HEADER --- */
+.log-header {
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    margin-bottom: 30px;
+}
+
+.back-link {
+    color: #666; 
+    font-weight: 600;
+    text-decoration: none;
+    transition: 0.2s;
+}
+.back-link:hover { color: var(--accent-pop); }
+
+.log-header h2 { margin: 0; }
+
+.section-title {
+    color: var(--accent-pop); 
+    border-bottom: 2px solid #eee; 
+    padding-bottom: 10px; 
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+}
+
+/* --- TABLE STYLING --- */
+.table-wrapper {
+    overflow-x: auto; 
+    margin-bottom: 50px;
+}
+
+.data-table {
+    width: 100%; 
+    border-collapse: collapse; 
+    min-width: 700px;
+}
+
+.data-table th {
+    padding: 15px;
+    text-align: left;
+}
+
+.data-table td {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+/* Specific Row Colors */
+.header-row-pending { background: rgba(255, 107, 107, 0.05); }
+.header-row-history { background: #f9f9f9; }
+
+/* Cell Content Styling */
+.date-cell { font-weight: bold; }
+.service-badge {
+    background: white; 
+    border: 1px solid #ddd; 
+    padding: 4px 10px; 
+    border-radius: 10px; 
+    font-size: 0.85rem;
+    display: inline-block;
+}
+
+.wa-link {
+    color: #25D366; 
+    font-weight: 600;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.wa-link:hover { text-decoration: underline; }
+
+/* History Table Specifics */
+.history-date { font-weight: bold; color: #555; }
+.history-phone { color: #888; text-decoration: none; }
+.history-phone:hover { color: var(--accent-pop); }
+.history-service {
+    color: var(--accent-pop); 
+    font-size: 0.85rem; 
+    font-weight: 600;
+}
+.history-meta { font-size: 0.85rem; color: #888; }
+
+/* --- ACTION BUTTONS --- */
+.action-cell {
+    display: flex; 
+    gap: 10px;
+}
+
+.confirm-btn {
+    background: #25D366; 
+    border: none; 
+    padding: 6px 15px; 
+    font-size: 0.9rem;
+    color: white;
+    cursor: pointer;
+    border-radius: 40px; /* Inherits book-btn shape */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: 0.3s;
+}
+.confirm-btn:hover { background: #20b858; transform: scale(1.05); }
+
+.reject-btn {
+    background: #ff4757; 
+    border: none; 
+    padding: 6px 15px; 
+    font-size: 0.9rem;
+    color: white;
+    cursor: pointer;
+    border-radius: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s;
+}
+.reject-btn:hover { background: #e04050; transform: scale(1.05); }
+
+.delete-icon-btn {
+    background: transparent; 
+    color: #ccc; 
+    border: none; 
+    font-size: 1rem; 
+    cursor: pointer; 
+    transition: 0.2s;
+}
+.delete-icon-btn:hover { color: #ff4757; }
+
+/* --- EMPTY STATE --- */
+.empty-box {
+    text-align: center; 
+    padding: 30px; 
+    color: #888; 
+    border: 2px dashed #ddd; 
+    border-radius: 10px; 
+    margin-bottom: 50px;
+}

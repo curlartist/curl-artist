@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section style="padding-top: 150px; display: block; min-height: auto;">
+    
+    <div class="glass-panel" style="margin-bottom: 40px; max-width: 900px; margin-left: auto; margin-right: auto;">
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+            <a href="{{ url_for('dashboard') }}" style="color: #666; font-weight: 600;">
+                <i class="fa-solid fa-arrow-left"></i> Hub
+            </a>
+            <h2 style="margin: 0;">Transformations</h2>
+            <div style="width: 50px;"></div>
+        </div>
+
+        <form action="{{ url_for('upload_work') }}" method="POST" enctype="multipart/form-data" style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+            
+            <div style="grid-column: span 2;">
+                <label style="font-weight: 600; margin-left: 5px;">Title</label>
+                <input type="text" name="title" required placeholder="e.g. The Summer Curl Cut"
+                       style="width: 100%; padding: 12px; margin-top: 8px; border-radius: 12px; border: 1px solid #ccc; font-family: inherit;">
+            </div>
+
+            <div>
+                <label style="font-weight: 600; margin-left: 5px;">Hair Type</label>
+                <select name="hair_type" required 
+                        style="width: 100%; padding: 12px; margin-top: 8px; border-radius: 12px; border: 1px solid #ccc; font-family: inherit; background: white;">
+                    <option value="" disabled selected>Select Type...</option>
+                    <option value="Curly">Curly</option>
+                    <option value="Wavy">Wavy</option>
+                    <option value="Coily">Coily</option>
+                    <option value="Straight">Straight</option>
+                    <option value="Color">Color Transformation</option>
+                </select>
+            </div>
+
+            <div>
+                <label style="font-weight: 600; margin-left: 5px;">Cost (₹)</label>
+                <input type="text" name="cost" placeholder="e.g. 2500"
+                       style="width: 100%; padding: 12px; margin-top: 8px; border-radius: 12px; border: 1px solid #ccc; font-family: inherit;">
+            </div>
+
+            <div class="file-upload-wrapper">
+                <label style="font-weight: 600;">Before Image</label>
+                <label for="before_file" class="custom-file-upload">
+                    <i class="fa-regular fa-image"></i>
+                    <span id="before-text">Select "Before"</span>
+                </label>
+                <input type="file" id="before_file" name="before_image" accept="image/*" required onchange="updateFileName(this, 'before-text')">
+            </div>
+
+            <div class="file-upload-wrapper">
+                <label style="font-weight: 600;">After Image</label>
+                <label for="after_file" class="custom-file-upload">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    <span id="after-text">Select "After"</span>
+                </label>
+                <input type="file" id="after_file" name="after_image" accept="image/*" required onchange="updateFileName(this, 'after-text')">
+            </div>
+
+            <div style="grid-column: span 2;">
+                <label style="font-weight: 600;">Reel Link</label>
+                <input type="url" name="reel_link" placeholder="https://instagram.com/reel/..." 
+                       style="width: 100%; padding: 12px; margin-top: 8px; border-radius: 12px; border: 1px solid #ccc; font-family: inherit;">
+            </div>
+
+            <button type="submit" class="book-btn" style="grid-column: span 2; justify-content: center; border: none; cursor: pointer; padding: 15px; font-size: 1rem;">
+                Upload Work <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </form>
+    </div>
+
+    <div class="glass-panel" style="max-width: 900px; margin-left: auto; margin-right: auto;">
+        <h3><i class="fa-solid fa-trash"></i> Manage Posts</h3>
+        <div style="display: flex; gap: 20px; overflow-x: auto; padding: 20px 0;">
+            {% for work in works %}
+            <div style="min-width: 180px; text-align: center; border: 1px solid white; background: rgba(255,255,255,0.5); padding: 15px; border-radius: 20px;">
+                <img src="{{ url_for('static', filename='uploads/after/' + work.after_image) }}" style="width: 120px; height: 120px; object-fit: cover; border-radius: 15px; margin-bottom: 10px;">
+                
+                <p style="font-weight: bold; font-size: 0.9rem; margin: 5px 0;">{{ work.title }}</p>
+                
+                {% if work.hair_type %}
+                    <span style="font-size: 0.7rem; background: #eee; padding: 2px 8px; border-radius: 10px; color: #666; display: inline-block;">{{ work.hair_type }}</span>
+                {% endif %}
+
+                {% if work.cost %}
+                    <p style="font-size: 0.8rem; color: var(--accent-pop); font-weight: 600; margin: 5px 0;">₹{{ work.cost }}</p>
+                {% endif %}
+                
+                <button onclick="openDeleteModal('{{ url_for('delete_work', id=work.id) }}')" 
+                        style="display: block; width: 100%; background: #ff4757; color: white; border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-size: 0.8rem; margin-top: 10px;">
+                    Delete
+                </button>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{% include 'admin/dashboard_scripts.html' %}
+{% endblock %}

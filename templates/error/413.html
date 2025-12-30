@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="error-page">
+    <div class="glass-panel error-card">
+        <i class="fa-solid fa-weight-hanging error-icon"></i>
+        <h1>413</h1>
+        <h2>Too Much Volume!</h2>
+        <p>That file is massive. Try uploading a smaller image (under 8MB) so we can handle the style.</p>
+        <a href="javascript:history.back()" class="reel-btn">Try Again</a>
+    </div>
+</section>
+
+<style>
+    .error-page { min-height: 80vh; display: flex; align-items: center; justify-content: center; padding-top: 100px; text-align: center; }
+    .error-card { padding: 50px; max-width: 500px; display: flex; flex-direction: column; align-items: center; gap: 20px; }
+    .error-icon { font-size: 5rem; color: #3742fa; margin-bottom: 10px; opacity: 0.8; } /* Heavy blue */
+    .error-card h1 { font-size: 4rem; margin: 0; line-height: 1; color: #3742fa; }
+    .error-card h2 { margin: 0; font-size: 1.5rem; color: #333; }
+    .error-card p { color: #666; line-height: 1.6; }
+</style>
+{% endblock %}

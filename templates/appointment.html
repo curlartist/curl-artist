@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/appointment.css') }}">
+
+<section class="appointment-page">
+    
+    <div class="solid-form-box">
+        <div class="form-header">
+            <h1>Book a Session</h1>
+            <p><strong>Fill out the form below.</strong><br>We will automatically open WhatsApp for you once you select a date!</p>
+        </div>
+
+        <form id="bookingForm" class="appointment-form" method="POST" action="{{ url_for('appointment') }}">
+
+            <div class="form-group">
+                <label>Your Name</label>
+                <input type="text" name="name" id="inputName" placeholder="e.g. Arpit Aaryan" class="clean-input" required>
+            </div>
+
+            <div class="form-group">
+                <label>Phone Number</label>
+                <input type="tel" name="phone" id="inputPhone" placeholder="9876543210" class="clean-input" required>
+            </div>
+
+            <div class="form-group">
+                <label>Select Studio Location</label>
+                <div class="select-wrapper">
+                    <select name="branch" id="inputBranch" class="clean-input form-select" required>
+                        <option value="" disabled selected>Choose a city...</option>
+                        <option value="Delhi">Delhi</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Service Required</label>
+                <div class="select-wrapper">
+                    <select name="service" id="inputService" class="clean-input form-select" required>
+                        <option value="" disabled selected>Select a Service</option>
+                        <option value="Haircut & Styling">Haircut & Styling</option>
+                        <option value="Curly Hair Routine">Curly Hair Routine</option>
+                        <option value="Coloring/Highlights">Coloring / Highlights</option>
+                        <option value="Consultation">Consultation Only</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Preferred Date</label>
+                <div class="date-trigger" id="dateTrigger">Select a Date</div>
+                <input type="hidden" name="date" id="realDateInput" required> 
+            </div>
+
+            <div id="loadingMessage" class="loading-overlay">
+                <div class="spinner"><i class="fa-solid fa-spinner fa-spin"></i></div>
+                <p>Perfect! Redirecting to WhatsApp...</p>
+            </div>
+
+        </form>
+    </div>
+
+    <div class="datepicker-backdrop" id="datepickerBackdrop">
+        <div class="calendar-modal">
+            <div class="calendar-header">
+                <button type="button" id="prevMonth" class="month-btn">&lt;</button>
+                <span id="currentMonthYear">December 2025</span>
+                <button type="button" id="nextMonth" class="month-btn">&gt;</button>
+            </div>
+            <div class="calendar-days-header">
+                <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+            </div>
+            <div class="calendar-grid" id="calendarGrid"></div>
+            <div class="modal-close-hint">Tap outside to close</div>
+        </div>
+    </div>
+
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const inputs = {
+            name: document.getElementById('inputName'),
+            phone: document.getElementById('inputPhone'),
+            branch: document.getElementById('inputBranch'),
+            service: document.getElementById('inputService'),
+            date: document.getElementById('realDateInput')
+        };
+        const loadingMsg = document.getElementById('loadingMessage');
+        const bookingForm = document.getElementById('bookingForm');
+        let isSubmitting = false;
+
+        function checkAndSubmit() {
+            if (isSubmitting) return;
+
+            // Check if all fields have values
+            const allFilled = 
+                inputs.name.value.trim() !== "" &&
+                inputs.phone.value.trim() !== "" &&
+                inputs.branch.value !== "" &&
+                inputs.service.value !== "" &&
+                inputs.date.value !== "";
+
+            if (allFilled) {
+                isSubmitting = true;
+                
+                // Show the spinner to the user
+                loadingMsg.classList.add('active');
+                
+                // SUBMIT THE FORM TO PYTHON
+                // Python will save the data, THEN Python will redirect to WhatsApp
+                bookingForm.submit();
+            }
+        }
+
+        // Attach listeners to trigger submission when fields change
+        inputs.name.addEventListener('input', checkAndSubmit);
+        inputs.phone.addEventListener('input', checkAndSubmit);
+        inputs.branch.addEventListener('change', checkAndSubmit);
+        inputs.service.addEventListener('change', checkAndSubmit);
+
+        // --- CALENDAR LOGIC (Standard) ---
+        const backdrop = document.getElementById('datepickerBackdrop');
+        const grid = document.getElementById('calendarGrid');
+        const monthLabel = document.getElementById('currentMonthYear');
+        const trigger = document.getElementById('dateTrigger');
+        let currentDate = new Date();
+        let currentMonth = currentDate.getMonth();
+        let currentYear = currentDate.getFullYear();
+        const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+        function renderCalendar(month, year) {
+            grid.innerHTML = "";
+            monthLabel.textContent = `${months[month]} ${year}`;
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const today = new Date();
+
+            for (let i = 0; i < firstDay; i++) {
+                const emptyCell = document.createElement('div');
+                emptyCell.classList.add('day-cell', 'empty');
+                grid.appendChild(emptyCell);
+            }
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const cell = document.createElement('div');
+                cell.classList.add('day-cell');
+                cell.textContent = day;
+                
+                const cellDate = new Date(year, month, day);
+                const todayReset = new Date();
+                todayReset.setHours(0,0,0,0);
+                
+                if (cellDate < todayReset) cell.classList.add('disabled');
+                if (day === today.getDate() && month === today.getMonth() && year === today.getFullYear()) cell.classList.add('today');
+                
+                cell.addEventListener('click', function() {
+                    if (this.classList.contains('disabled')) return;
+                    
+                    const yyyy = year;
+                    const mm = String(month + 1).padStart(2, '0');
+                    const dd = String(day).padStart(2, '0');
+                    
+                    // Set Value
+                    inputs.date.value = `${yyyy}-${mm}-${dd}`;
+                    trigger.textContent = `${months[month]} ${day}, ${year}`;
+                    trigger.classList.add('has-value');
+                    trigger.style.color = "#333";
+                    trigger.style.borderColor = "var(--accent-pop)";
+                    trigger.style.backgroundColor = "#fff";
+                    
+                    backdrop.classList.remove('show');
+                    
+                    // TRIGGER SUBMISSION CHECK
+                    checkAndSubmit();
+                    
+                    renderCalendar(month, year);
+                });
+                grid.appendChild(cell);
+            }
+        }
+
+        document.getElementById('dateTrigger').addEventListener('click', () => backdrop.classList.add('show'));
+        backdrop.addEventListener('click', (e) => { if (e.target === backdrop) backdrop.classList.remove('show'); });
+        document.getElementById('prevMonth').addEventListener('click', (e) => { e.stopPropagation(); currentMonth--; if (currentMonth < 0) { currentMonth = 11; currentYear--; } renderCalendar(currentMonth, currentYear); });
+        document.getElementById('nextMonth').addEventListener('click', (e) => { e.stopPropagation(); currentMonth++; if (currentMonth > 11) { currentMonth = 0; currentYear++; } renderCalendar(currentMonth, currentYear); });
+        renderCalendar(currentMonth, currentYear);
+    });
+</script>
+
+{% endblock %}

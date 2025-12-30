@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/appointments.css')}}">
+
+<section class="appointment-log-section">
+    
+    <div class="glass-panel log-container">
+        
+        <div class="log-header">
+            <a href="{{ url_for('dashboard') }}" class="back-link">
+                <i class="fa-solid fa-arrow-left"></i> Hub
+            </a>
+            <h2>Appointment Log</h2>
+            <div style="width: 50px;"></div> </div>
+
+        <h3 class="section-title">
+            <i class="fa-regular fa-bell"></i> New Requests
+        </h3>
+        
+        {% if pending %}
+            <div class="table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr class="header-row-pending">
+                            <th>Date Req.</th>
+                            <th>Customer</th>
+                            <th>Service</th>
+                            <th>WhatsApp</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for apt in pending %}
+                        <tr>
+                            <td class="date-cell">{{ apt.date_requested }}</td>
+                            <td>{{ apt.customer_name }}</td>
+                            <td>
+                                <span class="service-badge">{{ apt.service }}</span>
+                            </td>
+                            <td>
+                                <a href="https://wa.me/{{ apt.phone_number }}" target="_blank" class="wa-link">
+                                    <i class="fa-brands fa-whatsapp"></i> Chat
+                                </a>
+                            </td>
+                            <td class="action-cell">
+                                <a href="{{ url_for('confirm_appointment', id=apt.id) }}" 
+                                   title="Confirm & Add to Client List"
+                                   class="confirm-btn">
+                                    <i class="fa-solid fa-check"></i>
+                                </a>
+                                
+                                <button onclick="openDeleteModal('{{ url_for('delete_appointment', id=apt.id) }}')" 
+                                        class="reject-btn">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="empty-box">
+                <p>No new requests.</p>
+            </div>
+        {% endif %}
+
+
+        <h3 class="section-title" style="color: #333;">
+            <i class="fa-regular fa-calendar-check"></i> Confirmed History
+        </h3>
+
+        {% if confirmed %}
+            <div class="table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr class="header-row-history">
+                            <th>Date Req.</th>
+                            <th>Customer</th>
+                            <th>Phone</th>
+                            <th>Service</th>
+                            <th>Booked On</th>
+                            <th style="text-align: center;">Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for apt in confirmed %}
+                        <tr>
+                            <td class="history-date">{{ apt.date_requested }}</td>
+                            <td>{{ apt.customer_name }}</td>
+                            <td>
+                                <a href="https://wa.me/{{ apt.phone_number }}" target="_blank" class="history-phone">
+                                    {{ apt.phone_number }}
+                                </a>
+                            </td>
+                            <td>
+                                <span class="history-service">{{ apt.service }}</span>
+                            </td>
+                            <td class="history-meta">{{ apt.created_at.strftime('%Y-%m-%d') }}</td>
+                            <td style="text-align: center;">
+                                <button onclick="openDeleteModal('{{ url_for('delete_appointment', id=apt.id) }}')" 
+                                        class="delete-icon-btn">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p style="color: #888;">No history yet.</p>
+        {% endif %}
+    </div>
+
+</section>
+
+{% include 'admin/dashboard_scripts.html' %}
+{% endblock %}

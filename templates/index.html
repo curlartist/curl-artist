@@ -1,0 +1,202 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+
+<section class="hero-section">
+    <div class="glass-panel hero-card">
+        <h1>Hey, I'm <span class="highlight">Arpit</span>.</h1>
+        <p class="subtitle">I don't just cut hair; I sculpt confidence. Welcome to my personal studio.</p>
+        
+        <a href="#gallery-target" class="magic-scroll-btn">
+            <span>Click to see magic</span>
+            <i class="fa-solid fa-chevron-down"></i>
+        </a>
+    </div>
+</section>
+
+<section class="gallery-section" id="gallery-target">
+    <div class="section-header">
+        <h2>Top Transformations</h2>
+        <p>Drag the slider to see the Before & After</p>
+    </div>
+
+    <div class="gallery-filter-bar">
+        
+        <a href="{{ url_for('index', hair='all') }}#gallery-target" 
+           class="filter-item {% if not current_hair or current_hair|lower == 'all' %}active{% endif %}">
+           <div class="filter-icon-btn">
+               <svg viewBox="0 0 24 24" fill="none" stroke="none" style="width: 32px; height: 32px; color: inherit;">
+                   <rect x="3" y="3" width="8" height="8" rx="2" fill="currentColor"/>
+                   <rect x="13" y="3" width="8" height="8" rx="2" fill="currentColor"/>
+                   <rect x="3" y="13" width="8" height="8" rx="2" fill="currentColor"/>
+                   <rect x="13" y="13" width="8" height="8" rx="2" fill="currentColor"/>
+               </svg>
+           </div>
+           <span class="icon-label">All</span>
+        </a>
+
+        <a href="{{ url_for('index', hair='Curly') }}#gallery-target" 
+           class="filter-item {% if current_hair|lower == 'curly' %}active{% endif %}">
+           <div class="filter-icon-btn">
+               <img src="{{ url_for('static', filename='asset/curly.svg') }}" alt="Curly">
+           </div>
+           <span class="icon-label">Curly</span>
+        </a>
+
+        <a href="{{ url_for('index', hair='Wavy') }}#gallery-target" 
+           class="filter-item {% if current_hair|lower == 'wavy' %}active{% endif %}">
+           <div class="filter-icon-btn">
+               <img src="{{ url_for('static', filename='asset/wavy.svg') }}" alt="Wavy">
+           </div>
+           <span class="icon-label">Wavy</span>
+        </a>
+
+        <a href="{{ url_for('index', hair='Coily') }}#gallery-target" 
+           class="filter-item {% if current_hair|lower == 'coily' %}active{% endif %}">
+           <div class="filter-icon-btn">
+               <img src="{{ url_for('static', filename='asset/coily.svg') }}" alt="Coily">
+           </div>
+           <span class="icon-label">Coily</span>
+        </a>
+
+        <a href="{{ url_for('index', hair='Straight') }}#gallery-target" 
+           class="filter-item {% if current_hair|lower == 'straight' %}active{% endif %}">
+           <div class="filter-icon-btn">
+               <img src="{{ url_for('static', filename='asset/straight.svg') }}" alt="Straight">
+           </div>
+           <span class="icon-label">Straight</span>
+        </a>
+
+        <a href="{{ url_for('index', hair='Color') }}#gallery-target" 
+           class="filter-item {% if current_hair|lower == 'color' %}active{% endif %}">
+           <div class="filter-icon-btn">
+               <img src="{{ url_for('static', filename='asset/color.svg') }}" alt="Color">
+           </div>
+           <span class="icon-label">Color</span>
+        </a>
+    </div>
+
+    <div class="gallery-scroll-container" id="galleryContainer">
+        
+        {% if not works %}
+            <div class="empty-state">
+                <i class="fa-regular fa-face-frown"></i>
+                <p>No posts found for <strong>{{ current_hair }}</strong> hair yet!</p>
+                <br>
+                <a href="{{ url_for('index', hair='all') }}#gallery-target" class="reel-btn" style="text-decoration: none;">Show All</a>
+            </div>
+        {% endif %}
+        
+        {% for work in works %}
+        <div class="work-card glass-panel">
+            
+            <div class="ba-slider-container">
+                {% if work.cost %}
+                    <div class="cost-overlay">
+                        ₹ {{ work.cost }}
+                    </div>
+                {% endif %}
+                
+                <img src="{{ url_for('static', filename='uploads/after/' + work.after_image) }}" class="img-base" alt="After">
+
+                <div class="img-overlay">
+                    <img src="{{ url_for('static', filename='uploads/before/' + work.before_image) }}" class="img-front slider-img" alt="Before">
+                </div>
+
+                <div class="slider-handle">
+                    <i class="fa-solid fa-arrows-left-right"></i>
+                </div>
+
+                <div class="reel-layer" style="display: none;">
+                    <iframe class="reel-iframe" src="" frameborder="0" scrolling="no" allowtransparency="true"></iframe>
+                </div>
+            </div>
+
+            <div class="work-details">
+                <div class="work-header">
+                    <h3>{{ work.title }}</h3>
+                    {% if work.hair_type %}
+                        <span class="hair-badge">{{ work.hair_type }}</span>
+                    {% endif %}
+                </div>
+
+                <div class="work-footer">
+                    {% if work.reel_link %}
+                        <button class="reel-btn" onclick="toggleReel(this, '{{ work.reel_link }}')">
+                            <i class="fa-brands fa-instagram"></i> Watch Reel
+                        </button>
+                    {% else %}
+                        <button class="reel-btn placeholder-btn">
+                            Placeholder
+                        </button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="reviews-section">
+    <div class="section-header">
+        <h2>Vibe Check</h2>
+        <p>What the community is saying</p>
+    </div>
+
+    <div class="reviews-container">
+        {% if reviews %}
+            {% for review in reviews %}
+            <div class="review-card glass-panel home-review-card">
+                
+                <span class="aesthetic-quote">&rsquo;</span>
+
+                <div class="card-header">
+                    <div class="user-info">
+                        <span class="customer-name">{{ review.customer_name }}</span>
+                        <div class="stars small">
+                            {% for i in range(review.rating) %} <i class="fa-solid fa-star"></i> {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <p class="review-body">{{ review.content }}</p>
+
+                {% if review.image_back or review.image_front %}
+                <div class="review-collage">
+                    {% if review.image_back %}
+                        <img src="{{ url_for('static', filename='uploads/reviews/' + review.image_back) }}" class="collage-img review-img-back">
+                    {% endif %}
+                    {% if review.image_front %}
+                        <img src="{{ url_for('static', filename='uploads/reviews/' + review.image_front) }}" class="collage-img review-img-front">
+                    {% endif %}
+                </div>
+                {% endif %}
+                
+                <div class="review-footer">
+                    <div class="meta-info">
+                        {% if review.branch %}
+                            <span class="branch-tag">{{ review.branch }}</span>
+                        {% endif %}
+                        <span class="kudos-count"><i class="fa-solid fa-heart"></i> {{ review.kudos }}</span>
+                    </div>
+                    <span class="review-date">{{ review.created_at.strftime('%b %Y') }}</span>
+                </div>
+
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="glass-panel" style="text-align: center; padding: 40px; margin: 0 auto;">
+                <p style="margin-bottom: 15px;">Be the first to review!</p>
+                <a href="{{ url_for('reviews') }}" class="reel-btn" style="text-decoration:none; display:inline-block;">Write a review</a>
+            </div>
+        {% endif %}
+    </div>
+    
+    <div style="text-align: center; margin-top: 40px;">
+        <a href="{{ url_for('reviews') }}" class="reel-btn" style="text-decoration: none;">View All Reviews</a>
+    </div>
+</section>
+
+{% endblock %}

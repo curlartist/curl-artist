@@ -1,0 +1,230 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/reviews.css')}}">
+
+<section class="reviews-page">
+    
+    <div class="reviews-header">
+        <h1>The Wall of Love</h1>
+        <p>Real curls, real results. <br><strong>Fill the form below & select your branch to post instantly!</strong></p>
+        <a href="#reviews"><span>See All Reviews</span></a>
+    </div>
+
+    <div class="glass-panel form-panel">
+        <div class="form-title"><h3>Drop a Review</h3></div>
+        
+        <form action="{{ url_for('reviews') }}" method="POST" enctype="multipart/form-data" class="review-form" id="reviewForm">
+            
+            <div class="form-row">
+                <input type="text" name="name" id="revName" placeholder="Your Name" required class="form-input clean-input">
+                <input type="tel" name="phone" id="revPhone" required placeholder="Phone" pattern="[0-9]{10,15}" class="form-input clean-input">
+            </div>
+
+            <div class="form-group">
+                <label>Show off your Curls (Optional)</label>
+                <div class="photo-upload-container">
+                    <div class="upload-box">
+                        <input type="file" name="image_back" id="imgBack" accept="image/*" class="hidden-file-input">
+                        <label for="imgBack" class="upload-label">
+                            <i class="fa-solid fa-camera"></i>
+                            <span>Back View</span>
+                        </label>
+                    </div>
+                    <div class="upload-box">
+                        <input type="file" name="image_front" id="imgFront" accept="image/*" class="hidden-file-input">
+                        <label for="imgFront" class="upload-label">
+                            <i class="fa-regular fa-image"></i>
+                            <span>Front/Side</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+                        
+            <div class="rating-group" id="ratingGroup">
+                <label>Tap to rate:</label>
+                <div class="star-rating-input">
+                    <i class="fa-solid fa-star" data-value="1"></i>
+                    <i class="fa-solid fa-star" data-value="2"></i>
+                    <i class="fa-solid fa-star" data-value="3"></i>
+                    <i class="fa-solid fa-star" data-value="4"></i>
+                    <i class="fa-solid fa-star" data-value="5"></i>
+                </div>
+                <input type="hidden" name="rating" id="ratingValue" required>
+            </div>
+
+            <textarea name="content" id="revContent" rows="3" placeholder="How was your experience?" required class="form-input clean-input"></textarea>
+            
+            <div class="form-group highlight-group">
+                <label style="color: var(--accent-pop); font-weight: bold;">Select Branch to Post 👇</label>
+                <div class="select-wrapper">
+                    <select name="branch" id="revBranchTrigger" required class="form-select clean-input">
+                        <option value="" disabled selected>Select City to Auto-Post...</option>
+                        <!-- <option value="Mumbai">Mumbai</option> -->
+                        <option value="Delhi">Delhi</option>
+                        <!-- <option value="Gurugram">Gurugram</option> -->
+                        <!-- <option value="Bengaluru">Bengaluru</option> -->
+                    </select>
+                </div>
+            </div>
+
+            <div id="postingIndicator" style="display:none; text-align:center; color: var(--accent-pop); font-weight:bold; margin-top:10px;">
+                <i class="fa-solid fa-circle-notch fa-spin"></i> Posting your review...
+            </div>
+
+        </form>
+    </div>
+
+    <div class="filters-bar glass-panel" id="reviews">
+        <div class="filter-group">
+            <span>Sort by:</span>
+            <a href="{{ url_for('reviews', sort='kudos', stars=current_filter) }}" class="filter-pill {% if current_sort == 'kudos' %}active{% endif %}">Most Loved 🔥</a>
+            <a href="{{ url_for('reviews', sort='newest', stars=current_filter) }}" class="filter-pill {% if current_sort == 'newest' %}active{% endif %}">Newest</a>
+        </div>
+        <div class="filter-group">
+            <span>Rating:</span>
+            <a href="{{ url_for('reviews', sort=current_sort, stars='all') }}" class="filter-pill {% if not current_filter or current_filter == 'all' %}active{% endif %}">All</a>
+            <a href="{{ url_for('reviews', sort=current_sort, stars='5') }}" class="filter-pill {% if current_filter == '5' %}active{% endif %}">5 ★</a>
+        </div>
+    </div>
+
+    <div class="reviews-grid-container">
+        {% if reviews %}
+            {% for review in reviews %}
+            <div class="review-card glass-panel">
+                <span class="aesthetic-quote">&rsquo;</span>
+                <div class="card-header">
+                    <div class="user-info">
+                        <span class="customer-name">{{ review.customer_name }}</span>
+                        <div class="stars small">
+                            {% for i in range(review.rating) %} <i class="fa-solid fa-star"></i> {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <p class="review-body">{{ review.content }}</p>
+                {% if review.image_back or review.image_front %}
+                <div class="review-collage">
+                    {% if review.image_back %}
+                        <img src="{{ url_for('static', filename='uploads/reviews/' + review.image_back) }}" class="collage-img img-back" alt="Client Photo">
+                    {% endif %}
+                    {% if review.image_front %}
+                        <img src="{{ url_for('static', filename='uploads/reviews/' + review.image_front) }}" class="collage-img img-front" alt="Client Photo">
+                    {% endif %}
+                </div>
+                {% endif %}
+                <div class="review-footer">
+                    <div class="meta-info">
+                        {% if review.branch %}<div class="branch-badge">{{ review.branch }}</div>{% endif %}
+                        <span class="review-date">{{ review.created_at.strftime('%b %d, %Y') }}</span>
+                    </div>
+                    <button class="kudos-btn" data-id="{{ review.id }}" onclick="likeReview({{ review.id }}, this)">
+                        <i class="fa-regular fa-heart"></i> <span class="count">{{ review.kudos }}</span>
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state"><p>No reviews found with these filters.</p></div>
+        {% endif %}
+    </div>
+
+</section>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        
+        // --- 1. AUTO POST LOGIC ---
+        const branchTrigger = document.getElementById('revBranchTrigger');
+        const form = document.getElementById('reviewForm');
+        
+        // Fields to validate
+        const nameInput = document.getElementById('revName');
+        const phoneInput = document.getElementById('revPhone');
+        const contentInput = document.getElementById('revContent');
+        const ratingInput = document.getElementById('ratingValue');
+        const ratingGroup = document.getElementById('ratingGroup');
+
+        branchTrigger.addEventListener('change', function() {
+            // Clear previous errors
+            document.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
+            
+            let isValid = true;
+
+            if (!nameInput.value.trim()) { nameInput.classList.add('error'); isValid = false; }
+            if (!phoneInput.value.trim()) { phoneInput.classList.add('error'); isValid = false; }
+            if (!contentInput.value.trim()) { contentInput.classList.add('error'); isValid = false; }
+            if (!ratingInput.value) { ratingGroup.classList.add('error'); isValid = false; }
+
+            if (isValid) {
+                // Submit Form
+                document.getElementById('postingIndicator').style.display = 'block';
+                // Delay slightly for UX so they see the selection
+                setTimeout(() => form.submit(), 300);
+            } else {
+                // Reset Branch so they can select again
+                branchTrigger.value = "";
+                alert("Please fill in Name, Phone, Rating, and Review before selecting your branch!");
+            }
+        });
+
+
+        // --- 2. STAR RATING ---
+        const stars = document.querySelectorAll('.star-rating-input i');
+        stars.forEach(star => {
+            star.addEventListener('mouseover', function() { highlightStars(this.getAttribute('data-value')); });
+            star.addEventListener('click', function() {
+                ratingInput.value = this.getAttribute('data-value');
+                updateStars(ratingInput.value);
+                ratingGroup.classList.remove('error'); // Clear error on click
+            });
+        });
+        document.querySelector('.star-rating-input').addEventListener('mouseleave', function() {
+            highlightStars(0); 
+            if(ratingInput.value) updateStars(ratingInput.value);
+        });
+        function highlightStars(count) { stars.forEach(star => star.classList.toggle('hovered', star.getAttribute('data-value') <= count)); }
+        function updateStars(count) { stars.forEach(star => star.classList.toggle('active', star.getAttribute('data-value') <= count)); }
+
+        // --- 3. FILE UPLOAD ---
+        ['imgBack', 'imgFront'].forEach(id => {
+            const input = document.getElementById(id);
+            input.addEventListener('change', function() {
+                const label = this.nextElementSibling;
+                if (this.files && this.files.length > 0) {
+                    label.classList.add('has-file');
+                    label.querySelector('span').textContent = "File Selected";
+                    label.querySelector('i').classList.replace('fa-camera', 'fa-check');
+                    label.querySelector('i').classList.replace('fa-image', 'fa-check');
+                }
+            });
+        });
+
+        // --- 4. RESTORE LIKES ---
+        document.querySelectorAll('.kudos-btn').forEach(btn => {
+            const id = btn.getAttribute('data-id');
+            if (localStorage.getItem('liked_review_' + id)) {
+                btn.classList.add('liked');
+                let icon = btn.querySelector('i');
+                icon.classList.remove('fa-regular');
+                icon.classList.add('fa-solid');
+            }
+        });
+    });
+
+    function likeReview(reviewId, btnElement) {
+        if (localStorage.getItem('liked_review_' + reviewId)) return;
+        let countSpan = btnElement.querySelector('.count');
+        let currentCount = parseInt(countSpan.textContent);
+        countSpan.textContent = currentCount + 1;
+        let icon = btnElement.querySelector('i');
+        icon.classList.remove('fa-regular');
+        icon.classList.add('fa-solid');
+        btnElement.classList.add('liked');
+        localStorage.setItem('liked_review_' + reviewId, 'true');
+        fetch(`/reviews/like/${reviewId}`, { method: 'POST', headers: { 'Content-Type': 'application/json' } })
+        .then(response => response.json()).then(data => { countSpan.textContent = data.kudos; })
+        .catch(err => console.error('Error liking:', err));
+    }
+</script>
+{% endblock %}
