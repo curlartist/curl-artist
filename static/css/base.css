@@ -56,13 +56,23 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url("../asset/texture.png"); 
-    background-repeat: repeat; 
-    background-size: 500px; 
+    background-image: url("../asset/texture.png"); /* Make sure filename matches your new image */
+    
+    /* 1. Stop the image from repeating */
+    background-repeat: no-repeat; 
+    
+    /* 2. Center the image on the screen */
+    background-position: center center;
+    
+    /* 3. 'cover' ensures the image fills the screen without stretching/distorting.
+          It will crop the edges slightly if the aspect ratio doesn't match, 
+          but keeps the image sharp as long as the file resolution is decent. */
+    background-size: cover; 
+    
     z-index: -1; 
     pointer-events: none;
     opacity: 0.09;
-    filter: invert(100%) 
+    filter: invert(100%);
 }
 
 a { text-decoration: none; color: inherit; transition: 0.3s; }

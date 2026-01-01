@@ -29,7 +29,7 @@
 .img-wrapper {
     width: 100%;
     max-width: 420px;
-    aspect-ratio: 1/1; /* Forces a square/perfect ratio */
+    aspect-ratio: 1/1.2; /* Forces a perfect rectangular ratio */
     border-radius: 30px;
     overflow: hidden;
     border: 5px solid rgba(255, 255, 255, 0.5);

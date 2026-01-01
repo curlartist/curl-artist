@@ -1,6 +1,7 @@
 Flask
 Flask-SQLAlchemy
 SQLAlchemy
+pillow-heif
 # Production Servers
 waitress
 gunicorn

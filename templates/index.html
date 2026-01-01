@@ -9,6 +9,18 @@
         <h1>Hey, I'm <span class="highlight">Arpit</span>.</h1>
         <p class="subtitle">I don't just cut hair; I sculpt confidence. Welcome to my personal studio.</p>
         
+        <p class="bio-text" style="text-align: left;border-left: 4px solid var(--accent-pop); padding-left: 25px; background: rgba(107, 107, 107, 0.10); border-radius: 0 10px 10px 0;">
+                CURLY HAIRCUT ₹3000 + 5% <italics>Taxes</italics> <br>
+                MOISTURE THERAPY ₹3000 + 5% <italics>Taxes</italics> <br>
+                BOTH COMBO ₹5000 + 5% <italics>Taxes</italics> <br>
+                
+                HAIR COLOR :— <br>
+                HIGHLIGHS ₹8500 + 5% <italics>Taxes</italics> onwards <br>
+                GLOBAL ₹7500 + 5% <italics>Taxes</italics> onwards
+                
+        </p>
+
+
         <a href="#gallery-target" class="magic-scroll-btn">
             <span>Click to see magic</span>
             <i class="fa-solid fa-chevron-down"></i>
@@ -19,7 +31,7 @@
 <section class="gallery-section" id="gallery-target">
     <div class="section-header">
         <h2>Top Transformations</h2>
-        <p>Drag the slider to see the Before & After</p>
+        <p>Choose your hair type</p>
     </div>
 
     <div class="gallery-filter-bar">
@@ -188,7 +200,9 @@
             {% endfor %}
         {% else %}
             <div class="glass-panel" style="text-align: center; padding: 40px; margin: 0 auto;">
-                <p style="margin-bottom: 15px;">Be the first to review!</p>
+                <p style="margin-bottom: 15px;">
+                    Be the first featured review ⭐
+                </p>
                 <a href="{{ url_for('reviews') }}" class="reel-btn" style="text-decoration:none; display:inline-block;">Write a review</a>
             </div>
         {% endif %}
