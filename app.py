@@ -2,7 +2,7 @@ import os
 from urllib.parse import quote
 import uuid
 import sys
-from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
+from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify, render_template_string
 from werkzeug.utils import secure_filename
 from models import db, Work, Review, Appointment
 from sqlalchemy import func
@@ -528,7 +528,35 @@ def request_entity_too_large(e):
     return render_template('error/413.html'), 413
 
 # ==========================================
-# 8. APP ENTRY POINT
+# 8. HEALTH AND CREDITS
+# ==========================================
+
+@app.route('/health')
+def health_check():
+    return "OK", 200
+
+@app.route('/credits')
+def credits():
+    return render_template_string("""
+    {% extends "base.html" %}
+
+    {% block content %}
+    <div style="text-align: center; margin-top: 50px; font-family: system-ui, sans-serif;">
+        <h1>Built by Rishabh 🧠💻</h1>
+        <p><i>dont ask me how i built this</i></p>
+        <p>ig for proof i exist</p>
+        <p>
+            <a href="https://instagram.com/im.rishabh_ofc" target="_blank"
+               style="text-decoration: none; color: #E1306C; font-weight: 600;">
+                📸 @im.rishabh_ofc
+            </a>
+        </p>
+    </div>
+    {% endblock %}
+    """)
+    
+# ==========================================
+# 9. APP ENTRY POINT
 # ==========================================
 if __name__ == '__main__':
     app.run(debug=True)
