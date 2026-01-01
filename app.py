@@ -541,7 +541,7 @@ def credits():
     {% extends "base.html" %}
 
     {% block content %}
-    <div style="text-align: center; margin-top: 50px; font-family: system-ui, sans-serif;">
+    <div style="text-align: center; margin-top: 150px; font-family: system-ui, sans-serif;">
         <h1>Built by Rishabh 🧠💻</h1>
         <p><i>dont ask me how i built this</i></p>
         <p>ig for proof i exist</p>
